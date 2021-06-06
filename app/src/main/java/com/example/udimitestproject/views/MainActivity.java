@@ -1,22 +1,20 @@
 package com.example.udimitestproject.views;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
+import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.udimitestproject.R;
-import com.example.udimitestproject.coinrankingApi.CoinrankingApiHelper;
-import com.example.udimitestproject.data.CoinsItem;
+import com.example.udimitestproject.databinding.ActivityMainBinding;
 
-import java.util.List;
+import static com.example.udimitestproject.model.CoinsDataSource.*;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,7 +22,8 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
     SwipeRefreshLayout mSwipeRefreshLayout;
     CoinListViewModel mViewData;
-    ConstraintLayout mConstraintLayout;
+    SortHeaderListCoins mSortHeaderListCoins;
+    ActivityMainBinding mBinding;
 
     //@TODO replace with dagger
     public static MainActivity instance;
@@ -32,22 +31,42 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().hide();
-        setContentView(R.layout.activity_main);
+        if(getSupportActionBar() != null)
+            getSupportActionBar().hide();
+
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         instance = this;
         mViewData = new ViewModelProvider(this).get(CoinListViewModel.class);
-
-        mConstraintLayout = findViewById(R.id.view_group);
+        mViewData.initialize(this);
+        initLoadingHandler(mViewData);
 
         initRecycleView();
         initRefreshLayout();
+        mSortHeaderListCoins = new SortHeaderListCoins(this, (sortField, sortDir) -> {
+            mViewData.setOrder(sortField, sortDir);
+            updateCoinsList();
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        update();
+    }
+
+    private void initLoadingHandler(CoinListViewModel viewData) {
+        viewData.getDataLoadingHandler().observe(this, responseCode -> {
+            if(responseCode == RespondCode.Loading) {
+                mSwipeRefreshLayout.setRefreshing(true);
+            }
+            else if(responseCode == RespondCode.NotLoading) {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+            else if(responseCode == RespondCode.Failed) {
+                mSwipeRefreshLayout.setRefreshing(false);
+                showNoInternetAlert();
+            }
+        });
     }
 
     private void initRecycleView() {
@@ -55,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
-        mAdapter = new CoinsListAdapter(mViewData.getCoinsList());
+        mAdapter = new CoinsListAdapter();
+        mAdapter.setPagedList(mViewData.getCoinsList(), this);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -67,22 +87,11 @@ public class MainActivity extends AppCompatActivity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
         mSwipeRefreshLayout.setRefreshing(true);
-        mSwipeRefreshLayout.setOnRefreshListener(()-> {
-            update();
-        });
-        mViewData.getCoinsList().observe(this, (List<CoinsItem> coins) -> {
-            mSwipeRefreshLayout.setRefreshing(false);
-        });
+        mSwipeRefreshLayout.setOnRefreshListener(this::updateCoinsList);
     }
 
-    private void update() {
-        if(!CoinrankingApiHelper.isConnected(this)) {
-            showNoInternetAlert();
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
-        else {
-            mViewData.update();
-        }
+    private void updateCoinsList() {
+        mViewData.updateCoinsList();
     }
 
     void showNoInternetAlert() {

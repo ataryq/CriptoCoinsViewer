@@ -1,4 +1,4 @@
-package com.example.udimitestproject.data;
+package com.example.udimitestproject.coinsData;
 
 import com.google.gson.annotations.SerializedName;
 

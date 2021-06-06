@@ -6,24 +6,39 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.paging.PagedList;
+import androidx.paging.PagedListAdapter;
+import androidx.recyclerview.widget.DiffUtil;
 
 import com.example.udimitestproject.R;
-import com.example.udimitestproject.data.CoinsItem;
+import com.example.udimitestproject.coinsData.CoinsItem;
 import com.example.udimitestproject.databinding.ListOfCoinsItemBinding;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
-public class CoinsListAdapter extends RecyclerView.Adapter<CoinsListAdapterItem> {
+public class CoinsListAdapter extends PagedListAdapter<CoinsItem, CoinsListAdapterItem> {
 
-    private LiveData<List<CoinsItem>> mCoinsList;
+    public CoinsListAdapter() {
+        super(new DiffUtil.ItemCallback<CoinsItem>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull @NotNull CoinsItem oldItem,
+                                           @NonNull @NotNull CoinsItem newItem) {
+                return oldItem == newItem;
+            }
 
-    public CoinsListAdapter(LiveData<List<CoinsItem>> coinsList) {
-        mCoinsList = coinsList;
-        mCoinsList.observeForever((List<CoinsItem> coins) -> {
+            @Override
+            public boolean areContentsTheSame(@NonNull @NotNull CoinsItem oldItem,
+                                              @NonNull @NotNull CoinsItem newItem) {
+                return oldItem.equals(newItem);
+            }
+        });
+    }
+
+    public void setPagedList(LiveData<PagedList<CoinsItem>> coinsList, LifecycleOwner lifecycleOwner) {
+        coinsList.observe(lifecycleOwner, list -> {
+            submitList(list);
             notifyDataSetChanged();
         });
     }
@@ -41,11 +56,6 @@ public class CoinsListAdapter extends RecyclerView.Adapter<CoinsListAdapterItem>
 
     @Override
     public void onBindViewHolder(@NonNull CoinsListAdapterItem holder, int position) {
-        holder.bind(mCoinsList.getValue().get(position), position);
-    }
-
-    @Override
-    public int getItemCount() {
-        return mCoinsList.getValue().size();
+        holder.bind(getItem(position), position);
     }
 }

@@ -14,6 +14,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "API_KEY", "\"coinranking5ba97464467b74d3f09bf9604a41161d29064d711a020e76\""
     }
@@ -31,15 +32,19 @@ android {
     buildFeatures {
         dataBinding = true
     }
+
+    useLibrary 'android.test.mock'
 }
 
 dependencies {
     def retrofit_version = "2.8.1"
     def lifecycle_version = "2.2.0"
+    def arch_version = "2.1.0"
+    def paging_version = "2.1.0"
 
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    implementation 'com.google.code.gson:gson:2.6.2'
+    implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'com.github.ar-android:AndroidSvgLoader:1.0.2'
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
@@ -47,12 +52,17 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation "androidx.paging:paging-runtime:$paging_version"
+
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    testImplementation 'junit:junit:4.+'
+
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation("androidx.arch.core:core-testing:$arch_version")
+    testImplementation "com.google.truth:truth:1.1.2"
+    testImplementation 'org.mockito:mockito-core:2.19.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-
 }

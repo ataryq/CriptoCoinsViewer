@@ -1,4 +1,6 @@
-package com.example.udimitestproject.data;
+package com.example.udimitestproject.coinsData;
+
+import androidx.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -116,5 +118,13 @@ public class CoinsItem{
 
 	public String getIconUrl(){
 		return iconUrl;
+	}
+
+	@Override
+	public boolean equals(@Nullable @org.jetbrains.annotations.Nullable Object obj) {
+		CoinsItem o2 = (CoinsItem) obj;
+		return o2.getJsonMember24hVolume().equals(getJsonMember24hVolume()) &&
+				o2.getPrice().equals(getPrice()) &&
+				o2.getMarketCap().equals(getMarketCap());
 	}
 }

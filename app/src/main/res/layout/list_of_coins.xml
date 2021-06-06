@@ -4,6 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
+        android:id="@+id/list_coins_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorDarkBack"
@@ -27,7 +28,7 @@
                 android:layout_marginEnd="20dp">
 
                 <TextView
-                    android:id="@+id/order"
+                    android:id="@+id/name_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -38,19 +39,40 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/textView2"
+                <ImageView
+                    android:id="@+id/sort_icon_market_cap"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="160dp"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/name_label"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_baseline_arrow_drop_down_24"
+                    app:tint="@color/colorOnLight" />
+
+                <TextView
+                    android:id="@+id/price_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="180dp"
                     android:text="PRICE"
                     android:textColor="@color/colorOnLight"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <ImageView
+                    android:id="@+id/sort_icon_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/price_label"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_baseline_arrow_drop_down_24"
+                    app:tint="@color/colorOnLight" />
+
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/day_volume_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
@@ -59,6 +81,17 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/sort_icon_dayvol"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/day_volume_label"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_baseline_arrow_drop_down_24"
+                    app:tint="@color/colorOnLight" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

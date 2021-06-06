@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ahmadrosid.svgloader.SvgLoader;
 import com.example.udimitestproject.R;
-import com.example.udimitestproject.data.CoinsItem;
+import com.example.udimitestproject.Tools;
+import com.example.udimitestproject.coinsData.CoinsItem;
 import com.example.udimitestproject.databinding.ListOfCoinsItemBinding;
 
 import java.text.DecimalFormat;
@@ -31,8 +32,8 @@ public class CoinsListAdapterItem extends RecyclerView.ViewHolder {
 
         mBinding.name.setText(cut(mCoinInfo.getName(), 9));
         mBinding.setCoinItem(mCoinInfo);
-        mBinding.order.setText(String.valueOf(mOrder));
-        mBinding.price.setText("$ " + parseAndRoundDouble(mCoinInfo.getPrice()));
+        mBinding.order.setText(String.valueOf(mOrder + 1));
+        mBinding.price.setText("$ " + parseAndCutPrice());
         mBinding.volume.setText(makeVolumeText());
         mBinding.dayChange.setText(makeDayChangeText());
         loadCoinIcon();
@@ -49,6 +50,32 @@ public class CoinsListAdapterItem extends RecyclerView.ViewHolder {
         return cutString;
     }
 
+    private String parseAndCutPrice() {
+        return parseAndCutNumber(mCoinInfo.getPrice(), 3);
+    }
+
+    private Double cutNumber(double number, int maxSymbols) {
+        int tenSymbols = (int) Math.log10(number);
+
+        if(tenSymbols > maxSymbols)
+            tenSymbols = maxSymbols;
+        int numbersAfterDot = maxSymbols - tenSymbols;
+        return Tools.round(number, numbersAfterDot);
+    }
+
+    private String convertDoubleToString(Double number) {
+        if(number - number.intValue() == 0)
+            return new Integer(number.intValue()).toString();
+        else
+            return number.toString();
+    }
+
+    private String parseAndCutNumber(String numberStr, int maxSymbols) {
+        Double number = Tools.parseNumber(numberStr);
+        Double cutNumber = cutNumber(number, maxSymbols);
+        return convertDoubleToString(cutNumber);
+    }
+
     private void loadCoinIcon() {
         SvgLoader.pluck()
                 .with(MainActivity.instance)
@@ -58,8 +85,8 @@ public class CoinsListAdapterItem extends RecyclerView.ViewHolder {
 
     private Bitmap createSparklineBitmap(Context context) {
         int colorSparkline = getChange() > 0 ? Color.GREEN : Color.RED;
-        SparkLineBitmap canvas = new SparkLineBitmap(
-                context, mCoinInfo.getSparkline(), colorSparkline, new Float(getChange()));
+        SparkLineBitmap canvas =
+                new SparkLineBitmap(mCoinInfo.getSparkline(), context, colorSparkline);
         return canvas.getBitmap();
     }
 
@@ -76,37 +103,12 @@ public class CoinsListAdapterItem extends RecyclerView.ViewHolder {
         return change;
     }
 
-    private static Double roundDouble(Double number) {
-        if(number == null)
-            return 0.0;
-
-        DecimalFormat df = new DecimalFormat("#.##");
-
-        Double parseDouble = null;
-        try {
-            parseDouble = Double.valueOf(df.format(number));
-        }
-        catch (NumberFormatException ex) {
-            ex.printStackTrace();
-        }
-        return parseDouble == null ? 0.0 : parseDouble;
-    }
-
     private static Double parseAndRoundDouble(String number) {
-        if(number == null)
-            return 0.0;
-
-        Double parseDouble = null;
-        try {
-            parseDouble = Double.parseDouble(number);
-        }
-        catch (NumberFormatException ex) {
-            ex.printStackTrace();
-        }
-        return parseDouble == null ? 0.0 : roundDouble(parseDouble);
+        return Tools.round(Tools.parseNumber(number), 2);
     }
 
     private String makeVolumeText() {
+
         double volume = Double.parseDouble (mCoinInfo.getJsonMember24hVolume());
         String volumePostfix = "";
 
@@ -123,7 +125,9 @@ public class CoinsListAdapterItem extends RecyclerView.ViewHolder {
             volume /= 1e6;
         }
 
-        return "$ " + roundDouble(volume) + volumePostfix;
+        String cutVolume = convertDoubleToString(cutNumber(volume, 2));
+
+        return "$ " + cutVolume + volumePostfix;
     }
 
     private String makeDayChangeText() {

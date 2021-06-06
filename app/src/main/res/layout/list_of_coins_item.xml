@@ -6,7 +6,7 @@
     <data>
         <variable
             name="coinItem"
-            type="com.example.udimitestproject.data.CoinsItem" />
+            type="com.example.udimitestproject.coinsData.CoinsItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -45,9 +45,9 @@
                     android:id="@+id/coin_icon"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="36dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/order"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_launcher_background" />
 
@@ -55,10 +55,11 @@
                     android:id="@+id/sparkline"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_marginEnd="12dp"
+                    android:layout_marginEnd="24dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/day_change"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.444"
                     app:srcCompat="@drawable/ic_launcher_background" />
 
                 <TextView
@@ -69,6 +70,7 @@
                     android:layout_marginTop="4dp"
                     android:text="Bitcoin"
                     android:textColor="@color/colorOnLight"
+                    android:textSize="12sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@+id/coin_icon"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -81,16 +83,18 @@
                     android:layout_marginBottom="4dp"
                     android:text="@{coinItem.symbol}"
                     android:textColor="@color/colorOnLight"
+                    android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/coin_icon" />
 
                 <TextView
                     android:id="@+id/day_change"
-                    android:layout_width="wrap_content"
+                    android:layout_width="48dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:text=""
                     android:textColor="@color/colorOnLight"
+                    android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -99,10 +103,11 @@
                     android:id="@+id/volume"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="160dp"
+                    android:layout_marginStart="168dp"
                     android:layout_marginBottom="4dp"
                     android:text=""
                     android:textColor="@color/colorOnLight"
+                    android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
@@ -110,10 +115,11 @@
                     android:id="@+id/price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="160dp"
+                    android:layout_marginStart="168dp"
                     android:layout_marginTop="4dp"
                     android:text=""
                     android:textColor="@color/colorOnLight"
+                    android:textSize="12sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
